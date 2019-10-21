@@ -1,0 +1,54 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>Guess through websocket</title>
+  <style>
+    .response {
+      color: blue;
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+
+<body>
+<h1>WebSocket guess Rust application</h1>
+
+<!-- vuejs app template -->
+<div id="app">
+<span> After entering a number, press 'enter' </span> <br>
+<input type="text" v-model="text" v-on:keyup.enter="send" style="width:40em"/> <br>
+<span> The server responded: </span> <span class="response"> {{ response }} </span>
+</div>
+
+<!-- vuejs app -->
+<script>
+var app = new Vue({
+  el: '#app',
+  data: {
+    text: undefined,
+    response: undefined,
+    socket: undefined,
+  },
+  computed: {
+  },
+  methods: {
+    openSocket: function () { // set websocket
+      this.socket = new WebSocket("ws://127.0.0.1:3012/");
+      this.socket.onmessage = function (event) {
+        app.response = event.data // store message
+      }
+    },
+    send: function () {
+      this.socket.send(this.text);
+    },
+  },
+})
+
+app.openSocket(); // initialize connection
+
+</script>
+
+</body>
+</html>
